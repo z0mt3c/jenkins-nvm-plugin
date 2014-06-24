@@ -6,7 +6,9 @@ doesn't require `ruby-runtime` to be installed.
 ## Usage
 - Configure node version to use
 - Avoid using `npm -g` to install global packages instead just use `npm install'
-    * Ej: To Run Run Gulp do:
+    * Ej: To Run Run Gulp do in a shell command:
+     
+    
      ```bash
       cd src/gulp;
       npm install;
@@ -33,7 +35,7 @@ doesn't require `ruby-runtime` to be installed.
 
 Based on :
 
-[Jenkins rvm plugin](https://github.com/jenkinsci/rvm-plugin).
+[Jenkins rvm plugin](https://github.com/jenkinsci/rvm-plugin) and
 [Jenkins nvm plugin](https://github.com/codevise/jenkins-nvm-plugin).
 
 ## License
