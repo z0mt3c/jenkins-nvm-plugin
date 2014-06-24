@@ -48,6 +48,7 @@ public class NvmWrapper extends BuildWrapper {
         EnvVars envVars = new EnvVars(env);
         envVars.putAll(npmEnvVars);
         env.putAll(envVars);
+        listener.getLogger().println("env --->" + env.get("PATH"));
       }
     };
   }

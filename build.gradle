@@ -29,7 +29,7 @@ jenkinsPlugin {
   coreVersion = '1.569'
   displayName = 'nvm wrapper'
   url = "https://wiki.jenkins-ci.org/display/JENKINS/Some+Plugin"
-  gitHubUrl = "https://github.com/jenkinsci/some-plugin"
+  gitHubUrl = "https://github.com/gextech/jenkins-nvm-plugin"
   developers {
     developer {
       id 'atomsfat'
