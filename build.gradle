@@ -1,0 +1,41 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+      name "jenkins"
+      delegate.url("http://repo.jenkins-ci.org/releases/")
+    }
+    // The plugin is currently only available via the Jenkins Maven repository.
+  }
+  dependencies {
+    classpath group: 'org.jenkins-ci.tools', name: 'gradle-jpi-plugin', version: '0.5.0'
+  }
+}
+
+
+group = "org.jenkinsci.plugins"
+version = "0.0.1-SNAPSHOT"
+description = "NVM wrapper plugin"
+archivesBaseName = "nvm-wrapper"
+
+apply plugin: 'jpi'
+
+dependencies {
+    compile localGroovy()
+}
+
+jenkinsPlugin {
+  coreVersion = '1.569'
+  displayName = 'nvm wrapper'
+  url = "https://wiki.jenkins-ci.org/display/JENKINS/Some+Plugin"
+  gitHubUrl = "https://github.com/jenkinsci/some-plugin"
+  developers {
+    developer {
+      id 'atomsfat'
+      name 'Tomas Salazar'
+      email 'atomsmail+jenkins@gmail.com'
+    }
+  }
+}
+
