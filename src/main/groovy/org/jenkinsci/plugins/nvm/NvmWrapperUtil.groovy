@@ -61,7 +61,7 @@ public class NvmWrapperUtil {
         if (k == "PATH") {
           def path = v.split(File.pathSeparator).findAll { it =~ /[\\\/]\.nvm[\\\/]/ }.join(File.pathSeparator)
           newEnvVars.put("PATH", afterEnv.get("PATH"))
-       //   newEnvVars.put("PATH+NVM", path)
+          newEnvVars.put("PATH+NVM", path)
         } else {
           newEnvVars.put(k, v)
         }
@@ -69,8 +69,8 @@ public class NvmWrapperUtil {
       }
     }
 
-   // listener.getLogger().println "env PATH ${newEnvVars.get("PATH")}"
-  //  listener.getLogger().println "env PATH+NVM ${newEnvVars.get("PATH+NVM")}"
+      listener.getLogger().println "env PATH ${newEnvVars.get("PATH")}"
+      listener.getLogger().println "env PATH+NVM ${newEnvVars.get("PATH+NVM")}"
 
 
     return newEnvVars
@@ -115,7 +115,7 @@ public class NvmWrapperUtil {
 
     args.add(installer.absolutize().getRemote())
 
-    int sc = launcher.launch().cmds(args)
+    int sc = launcher.launch().cmds(args).pwd(build.workspace)
       .stdout(listener.getLogger())
       .stderr(listener.getLogger()).join()
 
