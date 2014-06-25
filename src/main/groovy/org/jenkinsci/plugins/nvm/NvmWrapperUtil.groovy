@@ -69,10 +69,8 @@ public class NvmWrapperUtil {
       }
     }
 
-      listener.getLogger().println "env PATH ${newEnvVars.get("PATH")}"
-      listener.getLogger().println "env PATH+NVM ${newEnvVars.get("PATH+NVM")}"
-
-
+    // listener.getLogger().println "env PATH ${newEnvVars.get("PATH")}"
+    //  listener.getLogger().println "env PATH+NVM ${newEnvVars.get("PATH+NVM")}"
     return newEnvVars
   }
 
