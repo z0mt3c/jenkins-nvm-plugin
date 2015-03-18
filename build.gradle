@@ -9,17 +9,17 @@ buildscript {
     // The plugin is currently only available via the Jenkins Maven repository.
   }
   dependencies {
-    classpath group: 'org.jenkins-ci.tools', name: 'gradle-jpi-plugin', version: '0.5.0'
+    classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.10.0'
   }
 }
 
+apply plugin: 'org.jenkins-ci.jpi'
 
-group = "org.jenkinsci.plugins"
+group = "org.jenkins-ci.plugins"
 version = "0.0.1-SNAPSHOT"
 description = "NVM wrapper plugin"
 archivesBaseName = "nvm-wrapper"
 
-apply plugin: 'jpi'
 
 dependencies {
     compile localGroovy()
