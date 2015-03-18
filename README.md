@@ -16,6 +16,7 @@ doesn't require `ruby-runtime` to be installed.
       ```
                                                                            
 ## Build
+- It was builded using gradle 2.3 and Java 1.8
 
 - 'gradle jpi' - Build the Jenkins plugin file, which can then be
   found in the build directory. The file will currently end in ".hpi".
