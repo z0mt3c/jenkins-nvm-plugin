@@ -1,5 +1,7 @@
 # Jenkins nvm Plugin (NvmWrapper)
 
+[![Build Status](https://img.shields.io/travis/gextech/jenkins-nvm-plugin/master.svg?style=flat)](https://travis-ci.org/gextech/jenkins-nvm-plugin)
+
 A java/groovy version of [Jenkins nvm plugin](https://github.com/codevise/jenkins-nvm-plugin), it
 doesn't require `ruby-runtime` to be installed.
 
