@@ -4,7 +4,7 @@ cache:
   - $HOME/.gradle
 language: groovy
 jdk:
-  - openjdk6
+  - oraclejdk7
 env:
   - TERM=dumb
 script: gradle jpi
