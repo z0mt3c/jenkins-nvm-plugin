@@ -40,7 +40,7 @@ public class NvmWrapper extends BuildWrapper {
   @Override
   public BuildWrapper.Environment setUp(AbstractBuild build, Launcher launcher,final BuildListener listener) throws IOException, InterruptedException {
     this.wrapperUtil = new NvmWrapperUtil(build, launcher, listener);
-     final Map npmEnvVars = this.wrapperUtil.getVars(this.version);
+     final Map<String, String> npmEnvVars = this.wrapperUtil.getVars(this.version);
     return new BuildWrapper.Environment() {
       @Override
       public void buildEnvVars(Map<String, String> env) {

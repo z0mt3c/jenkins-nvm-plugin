@@ -22,9 +22,10 @@ archivesBaseName = "nvm-wrapper"
 
 
 sourceCompatibility = '1.6'
+apply plugin: 'groovy'
 
 dependencies {
-    compile localGroovy()
+  compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
 }
 
 jenkinsPlugin {
@@ -40,4 +41,7 @@ jenkinsPlugin {
     }
   }
 }
-
+compileJava {
+  options.encoding = 'UTF-8'
+  options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}

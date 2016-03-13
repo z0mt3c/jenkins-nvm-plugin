@@ -23,7 +23,7 @@ public class NvmWrapperUtil {
     this.launcher = launcher
   }
 
-  public Map getVars(String version) throws IOException, InterruptedException {
+  public Map<String, String> getVars(String version) throws IOException, InterruptedException {
     if (!isNvmInstalled()) {
       installNvm()
       isNvmInstalled()
@@ -43,9 +43,9 @@ public class NvmWrapperUtil {
     nvmSourceCmd.add("-c")
     nvmSourceCmd.add(" source ${nvmPath} && nvm install ${version} && nvm use ${version} && export > nvm.env")
 
-    def afterEnv = toMap(getExport(nvmSourceCmd, "nvm.env"))
+    Map<String, String> afterEnv = toMap(getExport(nvmSourceCmd, "nvm.env"))
 
-    def newEnvVars = [:]
+    Map<String, String> newEnvVars = [:]
     afterEnv.each { k, v ->
 
       def beforeValue = beforeEnv.get(k)
@@ -83,7 +83,7 @@ public class NvmWrapperUtil {
 
   private Boolean isNvmInstalled() {
 
-    def installed = false
+    Boolean installed = false
 
      this.nvmPath = ["~/.nvm/nvm.sh", "/usr/local/nvm/nvm.sh"].find { path ->
       ArgumentListBuilder args = new ArgumentListBuilder()
@@ -113,8 +113,8 @@ public class NvmWrapperUtil {
     return sc
   }
 
-  private Map toMap(String export) {
-    def r = [:]
+  private Map<String, String> toMap(String export) {
+    Map<String, String> r = [:]
     export.readLines().each { line ->
 
       def entry = line.replaceAll("declare -x ", "").split("=")
