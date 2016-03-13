@@ -5,3 +5,4 @@ jenkins-new-nvm-plugin.iml
 build
 jenkins-cli.jar
 jenkins-nvm-wrapper-plugin.iml
+jenkins-nvm-plugin.iml
