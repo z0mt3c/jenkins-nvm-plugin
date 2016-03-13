@@ -7,5 +7,4 @@ jdk:
   - oraclejdk8
 env:
   - TERM=dumb
-script:
-  - gradle jpi
+script: gradle jpi
