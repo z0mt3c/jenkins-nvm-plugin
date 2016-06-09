@@ -20,17 +20,12 @@ version = "0.0.2-SNAPSHOT"
 description = "NVM wrapper plugin"
 archivesBaseName = "nvm-wrapper"
 
-
-sourceCompatibility = '1.6'
-apply plugin: 'groovy'
-
-dependencies {
-  compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
-}
+sourceCompatibility = '1.8'
 
 jenkinsPlugin {
   coreVersion = '1.609.1'
   displayName = 'nvm wrapper'
+  shortName = 'nvmWrapper'
   url = "https://wiki.jenkins-ci.org/display/JENKINS/Some+Plugin"
   gitHubUrl = "https://github.com/gextech/jenkins-nvm-plugin"
   developers {
