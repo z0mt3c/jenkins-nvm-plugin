@@ -5,6 +5,8 @@ cache:
 language: java
 jdk:
   - oraclejdk8
+before_install:
+ - chmod +x gradlew
 env:
   - TERM=dumb
-script: gradle jpi
+script: ./gradlew jpi
