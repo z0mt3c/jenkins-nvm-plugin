@@ -8,7 +8,7 @@ doesn't require `ruby-runtime` to be installed.
 ## Usage
 - Configure node version to use
 - Avoid using `npm -g` to install global packages instead just use `npm install'
-    * Ej: To Run Run Gulp do in a shell command:
+    * Ej: To Run Gulp, add a shell command:
      
     
      ```bash
