@@ -21,19 +21,19 @@ public class NvmWrapper extends BuildWrapper {
 
   private final static Logger log = Logger.getLogger(NvmWrapperUtil.class.getName());
 
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
   private String version;
   private transient NvmWrapperUtil wrapperUtil;
 
   @DataBoundConstructor
   public NvmWrapper(String version) {
+    this.version = version;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
     this.version = version;
   }
 
