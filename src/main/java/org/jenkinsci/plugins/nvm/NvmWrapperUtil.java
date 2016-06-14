@@ -5,6 +5,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ArgumentListBuilder;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
  * Created by atoms on 6/9/16.
  */
 public class NvmWrapperUtil {
+
+  private static final Logger LOGGER = Logger.getLogger(NvmWrapperUtil.class.getName());
 
   private AbstractBuild build;
   private Launcher launcher;
@@ -109,9 +112,9 @@ public class NvmWrapperUtil {
           .stdout(listener.getLogger())
           .stderr(listener.getLogger()).join();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.info(e.getMessage(), e);
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        LOGGER.info(e.getMessage(), e);
       }
       return statusCode == 0;
     }).findFirst().orElse(null);
