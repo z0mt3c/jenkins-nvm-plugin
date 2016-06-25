@@ -44,8 +44,6 @@ public class NvmWrapperUtil {
 
     Map<String, String> beforeEnv = toMap(getExport(beforeCmd, "before.env"));
 
-    //listener.getLogger().println "before env ${beforeEnv}"
-
     ArgumentListBuilder nvmSourceCmd = new ArgumentListBuilder();
     nvmSourceCmd.add("bash");
     nvmSourceCmd.add("-c");
@@ -75,9 +73,6 @@ public class NvmWrapperUtil {
       }
     });
 
-
-    // listener.getLogger().println "env PATH ${newEnvVars.get("PATH")}"
-    //  listener.getLogger().println "env PATH+NVM ${newEnvVars.get("PATH+NVM")}"
     return newEnvVars;
   }
 
