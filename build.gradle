@@ -16,7 +16,7 @@ buildscript {
 apply plugin: 'org.jenkins-ci.jpi'
 
 group = "org.jenkins-ci.plugins"
-version = "0.0.2-SNAPSHOT"
+version = "0.1.0"
 description = "NVM wrapper plugin"
 archivesBaseName = "nvm-wrapper"
 

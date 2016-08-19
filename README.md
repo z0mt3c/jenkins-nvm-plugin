@@ -1,4 +1,4 @@
-# Jenkins nvm Plugin (NvmWrapper)
+# [Jenkins nvm Plugin (nvm-wrapper)](https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin)
 
 [![Build Status](https://img.shields.io/travis/gextech/jenkins-nvm-plugin/master.svg?style=flat)](https://travis-ci.org/gextech/jenkins-nvm-plugin)
 
@@ -6,16 +6,7 @@ A java/groovy version of [Jenkins nvm plugin](https://github.com/codevise/jenkin
 doesn't require `ruby-runtime` to be installed.
 
 ## Usage
-- Configure node version to use
-- Avoid using `npm -g` to install global packages instead just use `npm install'
-    * Ej: To Run Gulp, add a shell command:
-     
-    
-     ```bash
-      cd src/gulp;
-      npm install;
-      node node_modules/gulp/bin/gulp.js
-      ```
+- Please follow this [steps](https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin)
                                                                            
 ## Build
 - It was builded using gradle 2.3 and Java 1.8
@@ -42,5 +33,7 @@ Based on :
 [Jenkins nvm plugin](https://github.com/codevise/jenkins-nvm-plugin).
 
 ## License
+
+Copyright (c) 2016 Tomas Salazar. This software is licensed under the MIT License.
 
 Please fork and improve.
