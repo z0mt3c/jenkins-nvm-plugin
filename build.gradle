@@ -30,7 +30,7 @@ jenkinsPlugin {
   gitHubUrl = "https://github.com/gextech/jenkins-nvm-plugin"
   developers {
     developer {
-      id 'atomsfat'
+      id 'atoms'
       name 'Tomas Salazar'
       email 'atomsmail+jenkins@gmail.com'
     }
