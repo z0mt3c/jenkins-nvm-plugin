@@ -19,7 +19,7 @@ A Java / Groovy version of [Jenkins nvm plugin](https://github.com/codevise/jenk
 
 ## Build
 
-* This project is built with Gradle 2.3 and Java 1.8.
+* This project is built with Gradle 3.3 and Java 1.8.
 
 * `gradle jpi`
 
