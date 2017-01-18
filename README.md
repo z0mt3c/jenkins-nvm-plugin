@@ -1,6 +1,6 @@
 # [Jenkins nvm Plugin (nvm-wrapper)](https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin)
 
-[![Build Status](https://img.shields.io/travis/jSherz/jenkins-nvm-plugin/master.svg?style=flat)](https://travis-ci.org/jSherz/jenkins-nvm-plugin)
+[![Build Status](https://travis-ci.org/jSherz/nvm-wrapper-plugin.svg?branch=master)](https://travis-ci.org/jSherz/nvm-wrapper-plugin)
 
 A Java / Groovy version of [Jenkins nvm plugin](https://github.com/codevise/jenkins-nvm-plugin). It does not require Ruby to be installed.
 
