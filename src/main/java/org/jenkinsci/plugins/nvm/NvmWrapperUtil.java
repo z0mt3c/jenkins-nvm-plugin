@@ -3,16 +3,19 @@ package org.jenkinsci.plugins.nvm;
 import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.BuildListener;
 import hudson.util.ArgumentListBuilder;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.FileSystems;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
 
 public class NvmWrapperUtil {
 
@@ -20,20 +23,32 @@ public class NvmWrapperUtil {
 
   private FilePath workspace;
   private Launcher launcher;
-  private PrintStream buildLogger;
-  private String nvmPath;
+  private BuildListener listener;
 
-  NvmWrapperUtil(final FilePath workspace, Launcher launcher, PrintStream buildLogger) {
+  private java.nio.file.FileSystem fs = FileSystems.getDefault();
+
+  private  List<String> nvmPaths = Arrays.asList(
+    System.getProperty("user.home") + "/.nvm/nvm.sh",
+    "/usr/local/nvm/nvm.sh"
+  );
+
+  NvmWrapperUtil(final FilePath workspace, Launcher launcher, BuildListener listener) {
     this.workspace = workspace;
-    this.buildLogger = buildLogger;
+    this.listener = listener;
     this.launcher = launcher;
   }
 
-  public Map<String, String> getVars(String version) throws IOException, InterruptedException {
-    if (!isNvmInstalled()) {
-      installNvm();
-      isNvmInstalled();
+  public Map<String, String> getNpmEnvVars(String version, String nvmInstallURL,
+                                     String nvmNodeJsOrgMirror, String nvmIoJsOrgMirror)
+                                      throws IOException, InterruptedException {
+
+    if (getNvmPath() == null ) {
+      installNvm(nvmInstallURL);
     }
+
+    String mirrorBin = version.contains("iojs") ?
+      "NVM_IOJS_ORG_MIRROR=" + nvmIoJsOrgMirror  :
+      "NVM_NODEJS_ORG_MIRROR=" + nvmNodeJsOrgMirror ;
 
     ArgumentListBuilder beforeCmd = new ArgumentListBuilder();
     beforeCmd.add("bash");
@@ -45,20 +60,20 @@ public class NvmWrapperUtil {
     ArgumentListBuilder nvmSourceCmd = new ArgumentListBuilder();
     nvmSourceCmd.add("bash");
     nvmSourceCmd.add("-c");
-    nvmSourceCmd.add(" source " + nvmPath +
-      " && nvm install " + version +
-      " && nvm use " + version +
+    nvmSourceCmd.add("source " + getNvmPath() +
+      " && " + mirrorBin + " nvm install " + version +
+      " && nvm use "+ version +
       " && export > nvm.env");
 
     Map<String, String> afterEnv = toMap(getExport(nvmSourceCmd, "nvm.env"));
 
-    Map<String, String> newEnvVars = new HashMap<String, String>();
+    Map<String, String> newEnvVars = new HashMap<>();
 
-    afterEnv.forEach((k, v) -> {
+    afterEnv.forEach((k,v)-> {
       String beforeValue = beforeEnv.get(k);
       if (!v.equals(beforeValue)) {
 
-        if (k.equals("PATH")) {
+        if (k.equals("PATH")){
           String path = Arrays.stream(v.split(File.pathSeparator))
             .filter(it -> it.matches(".*\\.nvm.*"))
             .collect(Collectors.joining(File.pathSeparator));
@@ -77,58 +92,42 @@ public class NvmWrapperUtil {
   private String getExport(ArgumentListBuilder args, String destFile) throws IOException, InterruptedException {
 
     Integer statusCode = launcher.launch().pwd(workspace).cmds(args)
-      .stdout(buildLogger)
-      .stderr(buildLogger).join();
+      .stdout(listener.getLogger())
+      .stderr(listener.getLogger()).join();
 
     if (statusCode != 0) {
-      new AbortException("Failed to fork bash ");
+      throw new AbortException("Failed to fork bash ");
     }
 
     return workspace.child(destFile).readToString();
 
   }
 
-  private Boolean isNvmInstalled() {
+  //**
+  private String getNvmPath() {
 
-    List<String> paths = new ArrayList<String>();
-    paths.add("~/.nvm/nvm.sh");
-    paths.add("/usr/local/nvm/nvm.sh");
+   return nvmPaths.stream().filter((String str) -> fs.getPath(str).toFile().exists())
+     .findFirst().orElse(null);
 
-    this.nvmPath = paths.stream().filter(path -> {
-      ArgumentListBuilder args = new ArgumentListBuilder();
-      args.add("bash");
-      args.add("-c");
-      args.add("test -f " + path);
-      Integer statusCode = -1;
-      try {
-        statusCode = launcher.launch().cmds(args)
-          .stdout(buildLogger)
-          .stderr(buildLogger).join();
-      } catch (IOException | InterruptedException e) {
-        LOGGER.info(e.getMessage(), e);
-      }
-      return statusCode == 0;
-    }).findFirst().orElse(null);
-    return nvmPath != null;
   }
 
-  private Integer installNvm() throws IOException, InterruptedException {
-    buildLogger.println("Installing nvm\n");
-
+  private Integer installNvm(String nvmInstallURL) throws IOException, InterruptedException {
+    listener.getLogger().println("Installing nvm\n");
     FilePath installer = workspace.child("nvm-installer");
-    installer.copyFrom(new URL("https://raw.github.com/creationix/nvm/master/install.sh"));
+    installer.copyFrom(new URL(nvmInstallURL));
     installer.chmod(0755);
     ArgumentListBuilder args = new ArgumentListBuilder();
 
     args.add(installer.absolutize().getRemote());
 
     return launcher.launch().cmds(args).pwd(workspace)
-      .stdout(buildLogger)
-      .stderr(buildLogger).join();
+      .stdout(listener.getLogger())
+      .stderr(listener.getLogger()).join();
+
   }
 
   private Map<String, String> toMap(String export) {
-    Map<String, String> r = new HashMap<String, String>();
+    Map<String, String> r = new HashMap<>();
 
     Arrays.asList(export.split("[\n|\r]")).forEach(line -> {
       String[] entry = line.replaceAll("declare -x ", "").split("=");

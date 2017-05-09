@@ -5,43 +5,54 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Descriptor;
+import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import net.sf.json.JSONObject;
-import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
-import org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback;
-import org.jenkinsci.plugins.workflow.steps.EnvironmentExpander;
-import org.jenkinsci.plugins.workflow.steps.Step;
-import org.jenkinsci.plugins.workflow.steps.StepContext;
-import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
-import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
+import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.Set;
 
 
 public class NvmStep extends Step {
 
-  private final String version;
+  private String version;
+  private String nvmInstallURL;
+  private String nvmNodeJsOrgMirror;
+  private String nvmIoJsOrgMirror;
 
   @DataBoundConstructor
   public NvmStep(final String version) {
     this.version = version;
+    this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : NvmDefaults.nvmInstallURL;
+    this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : NvmDefaults.nvmNodeJsOrgMirror;
+    this.nvmIoJsOrgMirror = StringUtils.isNotBlank(nvmIoJsOrgMirror) ? nvmIoJsOrgMirror : NvmDefaults.nvmIoJsOrgMirror;
   }
 
   public String getVersion() {
     return version;
   }
 
+  public String getNvmInstallURL() {
+    return nvmInstallURL;
+  }
+
+  public String getNvmNodeJsOrgMirror() {
+    return nvmNodeJsOrgMirror;
+  }
+
+  public String getNvmIoJsOrgMirror() {
+    return nvmIoJsOrgMirror;
+  }
+
   @Override
   public StepExecution start(final StepContext context) throws Exception {
-    return new Execution(version, context);
+    return new Execution(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror, context);
   }
 
   @Extension
@@ -85,20 +96,27 @@ public class NvmStep extends Step {
     private static final long serialVersionUID = 1;
 
     private final transient String version;
+    private final transient  String nvmInstallURL;
+    private final transient  String nvmNodeJsOrgMirror;
+    private final transient  String nvmIoJsOrgMirror;
 
-    public Execution(final String version, @Nonnull final StepContext context) {
+    public Execution(final String version,final String nvmInstallURL,
+                     final String nvmNodeJsOrgMirror,final String nvmIoJsOrgMirror, @Nonnull final StepContext context) {
       super(context);
       this.version = version;
+      this.nvmInstallURL = nvmInstallURL;
+      this.nvmNodeJsOrgMirror = nvmNodeJsOrgMirror;
+      this.nvmIoJsOrgMirror = nvmIoJsOrgMirror;
     }
 
     @Override
     public boolean start() throws Exception {
       final FilePath workspace = this.getContext().get(FilePath.class);
       final Launcher launcher = this.getContext().get(Launcher.class);
-      final PrintStream logger = this.getContext().get(TaskListener.class).getLogger();
+      final BuildListener listener = this.getContext().get(BuildListener.class);
 
-      final NvmWrapperUtil wrapperUtil = new NvmWrapperUtil(workspace, launcher, logger);
-      final Map<String, String> npmEnvVars = wrapperUtil.getVars(this.version);
+      final NvmWrapperUtil wrapperUtil = new NvmWrapperUtil(workspace, launcher, listener);
+      final Map<String, String> npmEnvVars = wrapperUtil.getNpmEnvVars(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror);
 
       getContext().newBodyInvoker()
         .withContext(EnvironmentExpander.merge(getContext().get(EnvironmentExpander.class), new ExpanderImpl(npmEnvVars)))

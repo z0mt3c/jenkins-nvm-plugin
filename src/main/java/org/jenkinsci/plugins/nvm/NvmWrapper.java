@@ -8,39 +8,57 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-/**
- * Created by Tomas Salazar on 6/24/14.
- */
-public class NvmWrapper extends BuildWrapper {
 
-  private final static Logger log = Logger.getLogger(NvmWrapperUtil.class.getName());
+  public class NvmWrapper extends BuildWrapper {
+
+  private final static Logger LOGGER = Logger.getLogger(NvmWrapper.class.getName());
 
   private String version;
+  private String nvmInstallURL;
+  private String nvmNodeJsOrgMirror;
+  private String nvmIoJsOrgMirror;
   private transient NvmWrapperUtil wrapperUtil;
 
   @DataBoundConstructor
-  public NvmWrapper(String version) {
+  public NvmWrapper(String version, String nvmInstallURL, String nvmNodeJsOrgMirror, String nvmIoJsOrgMirror) {
     this.version = version;
+    this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : NvmDefaults.nvmInstallURL;
+    this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : NvmDefaults.nvmNodeJsOrgMirror;
+    this.nvmIoJsOrgMirror = StringUtils.isNotBlank(nvmIoJsOrgMirror) ? nvmIoJsOrgMirror : NvmDefaults.nvmIoJsOrgMirror;
   }
 
   public String getVersion() {
     return version;
   }
 
-  public void setVersion(String version) {
-    this.version = version;
+  public String getNvmInstallURL() {
+    return nvmInstallURL;
   }
 
+  public String getNvmNodeJsOrgMirror() {
+    return nvmNodeJsOrgMirror;
+  }
+
+  public String getNvmIoJsOrgMirror() {
+    return nvmIoJsOrgMirror;
+  }
+
+
+
   @Override
-  public BuildWrapper.Environment setUp(AbstractBuild build, Launcher launcher,final BuildListener listener) throws IOException, InterruptedException {
-    this.wrapperUtil = new NvmWrapperUtil(build.getWorkspace(), launcher, listener.getLogger());
-     final Map<String, String> npmEnvVars = this.wrapperUtil.getVars(this.version);
+  public BuildWrapper.Environment setUp(AbstractBuild build, Launcher launcher,final BuildListener listener)
+    throws IOException, InterruptedException {
+    this.wrapperUtil = new NvmWrapperUtil(build.getWorkspace(), launcher, listener);
+    final Map<String, String> npmEnvVars = this.wrapperUtil
+      .getNpmEnvVars(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror);
+
     return new BuildWrapper.Environment() {
       @Override
       public void buildEnvVars(Map<String, String> env) {
@@ -56,7 +74,7 @@ public class NvmWrapper extends BuildWrapper {
   public final static class DescriptorImpl extends BuildWrapperDescriptor {
     @Override
     public String getDisplayName() {
-      return "Run the build in an nvm managed environment";
+      return "Run the build in an NVM managed environment";
     }
 
     @Override
