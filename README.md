@@ -7,9 +7,9 @@ doesn't require `ruby-runtime` to be installed.
 
 ## Usage
 - Please follow this [steps](https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin)
-                                                                           
+
 ## Build
-- It was builded using gradle 2.3 and Java 1.8
+- It was built using gradle 2.3 and Java 1.8
 
 - 'gradle jpi' - Build the Jenkins plugin file, which can then be
   found in the build directory. The file will currently end in ".hpi".
@@ -34,6 +34,6 @@ Based on :
 
 ## License
 
-Copyright (c) 2016 Tomas Salazar. This software is licensed under the MIT License.
+Copyright (c) 2017 Tomas Salazar. This software is licensed under the MIT License.
 
 Please fork and improve.
