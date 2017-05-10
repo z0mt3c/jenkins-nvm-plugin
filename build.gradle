@@ -9,7 +9,7 @@ buildscript {
     // The plugin is currently only available via the Jenkins Maven repository.
   }
   dependencies {
-    classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.18.1'
+    classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.22.0'
   }
 }
 
@@ -23,7 +23,7 @@ archivesBaseName = 'nvm-wrapper'
 sourceCompatibility = '1.8'
 
 jenkinsPlugin {
-  coreVersion = '1.609.1'
+  coreVersion = '1.609.3'
   displayName = 'nvm wrapper'
   shortName = 'nvm-wrapper'
   url = 'https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin'
