@@ -3,7 +3,7 @@ package org.jenkinsci.plugins.nvm;
 import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.BuildListener;
+import hudson.model.TaskListener;
 import hudson.util.ArgumentListBuilder;
 import org.apache.log4j.Logger;
 
@@ -23,7 +23,7 @@ public class NvmWrapperUtil {
 
   private FilePath workspace;
   private Launcher launcher;
-  private BuildListener listener;
+  private TaskListener listener;
 
   private java.nio.file.FileSystem fs = FileSystems.getDefault();
 
@@ -32,7 +32,7 @@ public class NvmWrapperUtil {
     "/usr/local/nvm/nvm.sh"
   );
 
-  NvmWrapperUtil(final FilePath workspace, Launcher launcher, BuildListener listener) {
+  NvmWrapperUtil(final FilePath workspace, Launcher launcher, TaskListener listener) {
     this.workspace = workspace;
     this.listener = listener;
     this.launcher = launcher;
