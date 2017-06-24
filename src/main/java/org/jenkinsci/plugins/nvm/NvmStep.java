@@ -27,7 +27,7 @@ public class NvmStep extends Step {
   private String nvmIoJsOrgMirror;
 
   @DataBoundConstructor
-  public NvmStep(final String version) {
+  public NvmStep(final String version,final String nvmInstallURL,final String nvmNodeJsOrgMirror,final String nvmIoJsOrgMirror) {
     this.version = version;
     this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : NvmDefaults.nvmInstallURL;
     this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : NvmDefaults.nvmNodeJsOrgMirror;
@@ -80,8 +80,11 @@ public class NvmStep extends Step {
     @Override
     public Step newInstance(StaplerRequest req, JSONObject formData) throws FormException {
       final String versionFromFormData = formData.getString("version");
+      final String nvmInstallURLFromFormData = formData.getString("nvmInstallURL");
+      final String nvmNodeJsOrgMirrorFromFormData = formData.getString("nvmNodeJsOrgMirror");
+      final String nvmIoJsOrgMirrorFromFormData = formData.getString("nvmIoJsOrgMirror");
 
-      return new NvmStep(versionFromFormData);
+      return new NvmStep(versionFromFormData, nvmInstallURLFromFormData, nvmNodeJsOrgMirrorFromFormData, nvmIoJsOrgMirrorFromFormData);
     }
 
     @Override
