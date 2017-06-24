@@ -63,7 +63,7 @@ public class NvmWrapperUtil {
     nvmSourceCmd.add("bash");
     nvmSourceCmd.add("-c");
     if (!getNvmPath().isPresent()) {
-      throw new AbortException("NVM is was not installed ");
+      throw new AbortException("NVM was not installed ");
     }
     getNvmPath().ifPresent(nvmPath -> {
       nvmSourceCmd.add("source " + nvmPath +
