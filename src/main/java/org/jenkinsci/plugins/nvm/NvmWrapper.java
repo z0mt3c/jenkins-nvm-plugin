@@ -21,17 +21,17 @@ import java.util.logging.Logger;
   private final static Logger LOGGER = Logger.getLogger(NvmWrapper.class.getName());
 
   private String version;
-  private String nvmInstallURL = "https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh";
-  private String nvmNodeJsOrgMirror = "https://nodejs.org/dist";
-  private String nvmIoJsOrgMirror = "https://iojs.org/dist";
+  private String nvmInstallURL;
+  private String nvmNodeJsOrgMirror;
+  private String nvmIoJsOrgMirror;
   private transient NvmWrapperUtil wrapperUtil;
 
   @DataBoundConstructor
   public NvmWrapper(String version, String nvmInstallURL, String nvmNodeJsOrgMirror, String nvmIoJsOrgMirror) {
     this.version = version;
-    this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : this.nvmInstallURL;
-    this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : this.nvmNodeJsOrgMirror;
-    this.nvmIoJsOrgMirror = StringUtils.isNotBlank(nvmIoJsOrgMirror) ? nvmIoJsOrgMirror : this.nvmIoJsOrgMirror;
+    this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : NvmDefaults.nvmInstallURL;
+    this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : NvmDefaults.nvmNodeJsOrgMirror;
+    this.nvmIoJsOrgMirror = StringUtils.isNotBlank(nvmIoJsOrgMirror) ? nvmIoJsOrgMirror : NvmDefaults.nvmIoJsOrgMirror;
   }
 
   public String getVersion() {
@@ -55,7 +55,7 @@ import java.util.logging.Logger;
   @Override
   public BuildWrapper.Environment setUp(AbstractBuild build, Launcher launcher,final BuildListener listener)
     throws IOException, InterruptedException {
-    this.wrapperUtil = new NvmWrapperUtil(build, launcher, listener);
+    this.wrapperUtil = new NvmWrapperUtil(build.getWorkspace(), launcher, listener);
     final Map<String, String> npmEnvVars = this.wrapperUtil
       .getNpmEnvVars(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror);
 

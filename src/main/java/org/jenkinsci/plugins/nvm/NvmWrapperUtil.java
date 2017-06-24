@@ -3,8 +3,7 @@ package org.jenkinsci.plugins.nvm;
 import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
+import hudson.model.TaskListener;
 import hudson.util.ArgumentListBuilder;
 import org.apache.log4j.Logger;
 
@@ -22,9 +21,9 @@ public class NvmWrapperUtil {
 
   private static final Logger LOGGER = Logger.getLogger(NvmWrapperUtil.class.getName());
 
-  private AbstractBuild build;
+  private FilePath workspace;
   private Launcher launcher;
-  private BuildListener listener;
+  private TaskListener listener;
 
   private java.nio.file.FileSystem fs = FileSystems.getDefault();
 
@@ -33,8 +32,8 @@ public class NvmWrapperUtil {
     "/usr/local/nvm/nvm.sh"
   );
 
-  NvmWrapperUtil(AbstractBuild build, Launcher launcher, BuildListener listener) {
-    this.build = build;
+  NvmWrapperUtil(final FilePath workspace, Launcher launcher, TaskListener listener) {
+    this.workspace = workspace;
     this.listener = listener;
     this.launcher = launcher;
   }
@@ -92,7 +91,7 @@ public class NvmWrapperUtil {
 
   private String getExport(ArgumentListBuilder args, String destFile) throws IOException, InterruptedException {
 
-    Integer statusCode = launcher.launch().pwd(build.getWorkspace()).cmds(args)
+    Integer statusCode = launcher.launch().pwd(workspace).cmds(args)
       .stdout(listener.getLogger())
       .stderr(listener.getLogger()).join();
 
@@ -100,7 +99,7 @@ public class NvmWrapperUtil {
       throw new AbortException("Failed to fork bash ");
     }
 
-    return build.getWorkspace().child(destFile).readToString();
+    return workspace.child(destFile).readToString();
 
   }
 
@@ -114,14 +113,14 @@ public class NvmWrapperUtil {
 
   private Integer installNvm(String nvmInstallURL) throws IOException, InterruptedException {
     listener.getLogger().println("Installing nvm\n");
-    FilePath installer = build.getWorkspace().child("nvm-installer");
+    FilePath installer = workspace.child("nvm-installer");
     installer.copyFrom(new URL(nvmInstallURL));
     installer.chmod(0755);
     ArgumentListBuilder args = new ArgumentListBuilder();
 
     args.add(installer.absolutize().getRemote());
 
-    return launcher.launch().cmds(args).pwd(build.getWorkspace())
+    return launcher.launch().cmds(args).pwd(workspace)
       .stdout(listener.getLogger())
       .stderr(listener.getLogger()).join();
 
