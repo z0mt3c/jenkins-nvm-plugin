@@ -5,27 +5,21 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.TaskListener;
 import hudson.util.ArgumentListBuilder;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class NvmWrapperUtil {
 
-  private static final Logger LOGGER = Logger.getLogger(NvmWrapperUtil.class.getName());
-
   private FilePath workspace;
   private Launcher launcher;
   private TaskListener listener;
 
-  private java.nio.file.FileSystem fs = FileSystems.getDefault();
-
-  private List<String> nvmPaths = Arrays.asList(
-    System.getProperty("user.home") + "/.nvm/nvm.sh",
+  private static final List<String> NVM_PATHS = Arrays.asList(
+    "~/.nvm/nvm.sh",
     "/usr/local/nvm/nvm.sh"
   );
 
@@ -39,14 +33,10 @@ public class NvmWrapperUtil {
                                            String nvmNodeJsOrgMirror, String nvmIoJsOrgMirror)
     throws IOException, InterruptedException {
 
-
-    if (!getNvmPath().isPresent()) {
-      int statusCode = installNvm(Optional.ofNullable(nvmInstallURL).orElse(NvmDefaults.nvmInstallURL));
-      if (statusCode != 0) {
-        throw new AbortException("Failed to install Nvm");
-      }
+    int statusCode = installNvm(Optional.ofNullable(nvmInstallURL).orElse(NvmDefaults.nvmInstallURL));
+    if (statusCode != 0) {
+      throw new AbortException("Failed to install NVM");
     }
-
 
     String mirrorBin = version.contains("iojs") ?
       "NVM_IOJS_ORG_MIRROR=" + Optional.ofNullable(nvmIoJsOrgMirror).orElse(NvmDefaults.nvmIoJsOrgMirror) :
@@ -62,15 +52,13 @@ public class NvmWrapperUtil {
     ArgumentListBuilder nvmSourceCmd = new ArgumentListBuilder();
     nvmSourceCmd.add("bash");
     nvmSourceCmd.add("-c");
-    if (!getNvmPath().isPresent()) {
-      throw new AbortException("NVM was not installed ");
-    }
-    getNvmPath().ifPresent(nvmPath -> {
-      nvmSourceCmd.add("source " + nvmPath +
+    nvmSourceCmd.add(
+        NVM_PATHS.stream().map(
+          path -> "{ [ -f " + path + " ] && source " + path + "; }")
+          .collect(Collectors.joining(" || ")) +
         " && " + mirrorBin + " nvm install " + version +
         " && nvm use " + version +
         " && export > nvm.env");
-    });
 
     Map<String, String> afterEnv = toMap(getExport(nvmSourceCmd, "nvm.env"));
 
@@ -107,14 +95,6 @@ public class NvmWrapperUtil {
     }
 
     return workspace.child(destFile).readToString();
-
-  }
-
-  //**
-  private Optional<String> getNvmPath() {
-
-    return nvmPaths.stream().filter((String str) -> fs.getPath(str).toFile().exists())
-      .findFirst();
 
   }
 
