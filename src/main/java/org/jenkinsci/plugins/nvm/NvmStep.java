@@ -117,6 +117,8 @@ public class NvmStep extends Step {
       final FilePath workspace = this.getContext().get(FilePath.class);
       final Launcher launcher = this.getContext().get(Launcher.class);
 
+      workspace.mkdirs();
+
       final NvmWrapperUtil wrapperUtil = new NvmWrapperUtil(workspace, launcher, launcher.getListener());
       final Map<String, String> npmEnvVars = wrapperUtil.getNpmEnvVars(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror);
 
