@@ -11,6 +11,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
@@ -21,29 +22,44 @@ import java.util.Set;
 
 public class NvmStep extends Step {
 
-  private String version;
+  private final @Nonnull String version;
   private String nvmInstallURL;
   private String nvmNodeJsOrgMirror;
   private String nvmIoJsOrgMirror;
 
   @DataBoundConstructor
-  public NvmStep(final String version,final String nvmInstallURL,final String nvmNodeJsOrgMirror,final String nvmIoJsOrgMirror) {
+  public NvmStep(final String version) {
     this.version = version;
-    this.nvmInstallURL = StringUtils.isNotBlank(nvmInstallURL) ? nvmInstallURL : NvmDefaults.nvmInstallURL;
-    this.nvmNodeJsOrgMirror = StringUtils.isNotBlank(nvmNodeJsOrgMirror) ? nvmNodeJsOrgMirror : NvmDefaults.nvmNodeJsOrgMirror;
-    this.nvmIoJsOrgMirror = StringUtils.isNotBlank(nvmIoJsOrgMirror) ? nvmIoJsOrgMirror : NvmDefaults.nvmIoJsOrgMirror;
+    this.nvmInstallURL = NvmDefaults.nvmInstallURL;
+    this.nvmNodeJsOrgMirror = NvmDefaults.nvmNodeJsOrgMirror;
+    this.nvmIoJsOrgMirror = NvmDefaults.nvmIoJsOrgMirror;
   }
 
   public String getVersion() {
     return version;
   }
 
+  @DataBoundSetter
+  public void setNvmInstallURL(String nvmInstallURL) {
+    this.nvmInstallURL = nvmInstallURL;
+  }
+
   public String getNvmInstallURL() {
     return nvmInstallURL;
   }
 
+  @DataBoundSetter
+  public void setNvmNodeJsOrgMirror(String nvmNodeJsOrgMirror) {
+    this.nvmNodeJsOrgMirror = nvmNodeJsOrgMirror;
+  }
+
   public String getNvmNodeJsOrgMirror() {
     return nvmNodeJsOrgMirror;
+  }
+
+  @DataBoundSetter
+  public void setNvmIoJsOrgMirror(String nvmIoJsOrgMirror) {
+    this.nvmIoJsOrgMirror = nvmIoJsOrgMirror;
   }
 
   public String getNvmIoJsOrgMirror() {
@@ -84,7 +100,21 @@ public class NvmStep extends Step {
       final String nvmNodeJsOrgMirrorFromFormData = formData.getString("nvmNodeJsOrgMirror");
       final String nvmIoJsOrgMirrorFromFormData = formData.getString("nvmIoJsOrgMirror");
 
-      return new NvmStep(versionFromFormData, nvmInstallURLFromFormData, nvmNodeJsOrgMirrorFromFormData, nvmIoJsOrgMirrorFromFormData);
+      NvmStep nvmStep = new NvmStep(versionFromFormData);
+
+      if (StringUtils.isNotBlank(nvmInstallURLFromFormData)) {
+        nvmStep.setNvmInstallURL(nvmInstallURLFromFormData);
+      }
+
+      if (StringUtils.isNotBlank(nvmNodeJsOrgMirrorFromFormData)) {
+        nvmStep.setNvmNodeJsOrgMirror(nvmNodeJsOrgMirrorFromFormData);
+      }
+
+      if (StringUtils.isNotBlank(nvmIoJsOrgMirrorFromFormData)) {
+        nvmStep.setNvmIoJsOrgMirror(nvmIoJsOrgMirrorFromFormData);
+      }
+
+      return nvmStep;
     }
 
     @Override
