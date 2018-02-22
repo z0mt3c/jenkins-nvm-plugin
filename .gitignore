@@ -7,3 +7,4 @@ jenkins-cli.jar
 jenkins-nvm-wrapper-plugin.iml
 jenkins-nvm-plugin.iml
 classes/
+nvm-wrapper-plugin.iml

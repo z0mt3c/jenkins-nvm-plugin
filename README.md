@@ -1,6 +1,8 @@
 # [Jenkins nvm Plugin (nvm-wrapper)](https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin)
 
-[![Build Status](https://img.shields.io/travis/tacoss/jenkins-nvm-plugin/master.svg?style=flat)](https://travis-ci.org/tacoss/jenkins-nvm-plugin)
+[![Build Status](https://img.shields.io/travis/tacoss/nvm-wrapper-plugin/master.svg?style=flat)](https://travis-ci.org/tacoss/nvm-wrapper-plugin)
+
+
 
 A java/groovy version of [Jenkins nvm plugin](https://github.com/codevise/jenkins-nvm-plugin), it
 doesn't require `ruby-runtime` to be installed.
@@ -34,6 +36,6 @@ Based on :
 
 ## License
 
-Copyright (c) 2017 Tomas Salazar. This software is licensed under the MIT License.
+Copyright (c) 2018 Tomas Salazar. This software is licensed under the MIT License.
 
 Please fork and improve.
