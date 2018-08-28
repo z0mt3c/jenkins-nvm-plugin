@@ -3,39 +3,45 @@ buildscript {
     mavenLocal()
     mavenCentral()
     maven {
-      name "jenkins"
-      delegate.url("http://repo.jenkins-ci.org/releases/")
+      name 'jenkins'
+      delegate.url('http://repo.jenkins-ci.org/releases/')
     }
     // The plugin is currently only available via the Jenkins Maven repository.
   }
   dependencies {
-    classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.10.0'
+    classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.22.0'
   }
 }
 
 apply plugin: 'org.jenkins-ci.jpi'
 
-group = "org.jenkins-ci.plugins"
-version = "0.0.1-SNAPSHOT"
-description = "NVM wrapper plugin"
-archivesBaseName = "nvm-wrapper"
+group = 'org.jenkins-ci.plugins'
+version = '0.1.5'
+description = 'NVM wrapper plugin'
+archivesBaseName = 'nvm-wrapper'
 
-
-dependencies {
-    compile localGroovy()
-}
+sourceCompatibility = '1.8'
 
 jenkinsPlugin {
-  coreVersion = '1.569'
+  coreVersion = '1.609.3'
   displayName = 'nvm wrapper'
-  url = "https://wiki.jenkins-ci.org/display/JENKINS/Some+Plugin"
-  gitHubUrl = "https://github.com/gextech/jenkins-nvm-plugin"
+  shortName = 'nvm-wrapper'
+  url = 'https://wiki.jenkins-ci.org/display/JENKINS/Nvm+Wrapper+Plugin'
+  gitHubUrl = 'https://github.com/gextech/jenkins-nvm-plugin'
   developers {
     developer {
-      id 'atomsfat'
+      id 'atoms'
       name 'Tomas Salazar'
       email 'atomsmail+jenkins@gmail.com'
     }
   }
 }
 
+dependencies {
+  jenkinsPlugins 'org.jenkins-ci.plugins.workflow:workflow-step-api:2.7@jar'
+}
+
+compileJava {
+  options.encoding = 'UTF-8'
+  options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+}
