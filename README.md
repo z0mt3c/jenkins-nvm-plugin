@@ -13,13 +13,13 @@ doesn't require `ruby-runtime` to be installed.
 ## Build
 - It was built using gradle 2.3 and Java 1.8
 
-- 'gradle jpi' - Build the Jenkins plugin file, which can then be
+- `gradle jpi` - Build the Jenkins plugin file, which can then be
   found in the build directory. The file will currently end in ".hpi".
-- 'gradle install' - Build the Jenkins plugin and install it into your
+- `gradle install` - Build the Jenkins plugin and install it into your
   local Maven repository.
-- 'gradle uploadArchives' (or 'gradle deploy') - Deploy your plugin to
+- `gradle uploadArchives` (or 'gradle deploy') - Deploy your plugin to
   the Jenkins Maven repository to be included in the Update Center.
-- 'gradle server' - Run a local jenkins to test
+- `gradle server` - Run a local jenkins to test
 
 ## Features
 

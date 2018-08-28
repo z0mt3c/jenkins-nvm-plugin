@@ -5,7 +5,6 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +25,8 @@ public class NvmStep extends Step {
   private String nvmInstallURL;
   private String nvmNodeJsOrgMirror;
   private String nvmIoJsOrgMirror;
+  private String nvmInstallDir;;
+  private String nvmInstallNodeVersion;
 
   @DataBoundConstructor
   public NvmStep(final String version) {
@@ -66,9 +67,30 @@ public class NvmStep extends Step {
     return nvmIoJsOrgMirror;
   }
 
+  public String getNvmInstallDir() {
+    return nvmInstallDir;
+  }
+
+  @DataBoundSetter
+  public void setNvmInstallDir(String nvmInstallDir) {
+    this.nvmInstallDir = nvmInstallDir;
+  }
+
+
+
+  public String getNvmInstallNodeVersion() {
+    return nvmInstallNodeVersion;
+  }
+
+  @DataBoundSetter
+  public void setNvmInstallNodeVersion(String nvmInstallNodeVersion) {
+    this.nvmInstallNodeVersion = nvmInstallNodeVersion;
+  }
+
   @Override
   public StepExecution start(final StepContext context) throws Exception {
-    return new Execution(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror, context);
+    return new Execution(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror,
+                         this.nvmInstallDir, this.nvmInstallNodeVersion,  context);
   }
 
   @Extension
@@ -99,6 +121,9 @@ public class NvmStep extends Step {
       final String nvmInstallURLFromFormData = formData.getString("nvmInstallURL");
       final String nvmNodeJsOrgMirrorFromFormData = formData.getString("nvmNodeJsOrgMirror");
       final String nvmIoJsOrgMirrorFromFormData = formData.getString("nvmIoJsOrgMirror");
+      final String nvmInstallDir = formData.getString("nvmInstallDir");
+
+      final String nvmInstallNodeVersion = formData.getString("nvmInstallNodeVersion");
 
       NvmStep nvmStep = new NvmStep(versionFromFormData);
 
@@ -114,6 +139,10 @@ public class NvmStep extends Step {
         nvmStep.setNvmIoJsOrgMirror(nvmIoJsOrgMirrorFromFormData);
       }
 
+
+      nvmStep.setNvmInstallDir(nvmInstallDir);
+      nvmStep.setNvmInstallNodeVersion(nvmInstallNodeVersion);
+
       return nvmStep;
     }
 
@@ -128,18 +157,25 @@ public class NvmStep extends Step {
 
     private static final long serialVersionUID = 1;
 
-    private final transient String version;
-    private final transient  String nvmInstallURL;
-    private final transient  String nvmNodeJsOrgMirror;
-    private final transient  String nvmIoJsOrgMirror;
+    private final transient String nodeVersion;
+    private final transient String nvmInstallURL;
+    private final transient String nvmNodeJsOrgMirror;
+    private final transient String nvmIoJsOrgMirror;
+    private final transient String nvmInstallDir;
+    private final transient String nvmInstallNodeVersion;
 
-    public Execution(final String version,final String nvmInstallURL,
-                     final String nvmNodeJsOrgMirror,final String nvmIoJsOrgMirror, @Nonnull final StepContext context) {
+    public Execution(final String nodeVersion,final String nvmInstallURL,
+                     final String nvmNodeJsOrgMirror,final String nvmIoJsOrgMirror,
+                     final String nvmInstallDir,
+                     final String nvmInstallNodeVersion,
+                     @Nonnull final StepContext context) {
       super(context);
-      this.version = version;
+      this.nodeVersion = nodeVersion;
       this.nvmInstallURL = nvmInstallURL;
       this.nvmNodeJsOrgMirror = nvmNodeJsOrgMirror;
       this.nvmIoJsOrgMirror = nvmIoJsOrgMirror;
+      this.nvmInstallDir = nvmInstallDir;
+      this.nvmInstallNodeVersion = nvmInstallNodeVersion;
     }
 
     @Override
@@ -150,7 +186,9 @@ public class NvmStep extends Step {
       workspace.mkdirs();
 
       final NvmWrapperUtil wrapperUtil = new NvmWrapperUtil(workspace, launcher, launcher.getListener());
-      final Map<String, String> npmEnvVars = wrapperUtil.getNpmEnvVars(this.version, this.nvmInstallURL, this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror);
+      final Map<String, String> npmEnvVars = wrapperUtil.getNpmEnvVars(this.nodeVersion, this.nvmInstallURL,
+                                                                       this.nvmNodeJsOrgMirror, this.nvmIoJsOrgMirror,
+                                                                       this.nvmInstallDir);
 
       getContext().newBodyInvoker()
         .withContext(EnvironmentExpander.merge(getContext().get(EnvironmentExpander.class), new ExpanderImpl(npmEnvVars)))
